@@ -11,27 +11,6 @@ function App() {
 
   const buttons = ['7', '8', '9', '4', '5', '6', '1', '2', '3', '0', '00', 'C']
 
-
-  // const onChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-
-  //   if (event.target.name === 'numberinput') {
-  //     // event.preventDefault();
-  //     if (event.target.value === 'C') {
-  //       setValues('')
-  //     } else {
-  //       setValues((prev) => prev + event.target.value)
-  //     }
-  //   } else {
-  //     setValues(event.target.value)
-  //   }
-
-  //   console.log('event.target.value:', event.target.value);
-  //   console.log('event.target.name:', event.target.name);
-  //   console.log('event.target.selectionStart:', event.target.selectionStart);
-
-
-  // }, []);
-
   const focusInput = () => {
     if (inputRef.current) {
       inputRef.current.focus();
@@ -61,12 +40,16 @@ function App() {
         if (currentIndex !== -1) {
           const newIndex = (currentIndex - 1 + buttons.length) % buttons.length
           setActiveButton(buttons[newIndex]);
+        } else {
+          setActiveButton(buttons[0]);
         }
       } else {
         const currentIndex = buttons.indexOf(activeButton)
         if (currentIndex !== -1) {
           const newIndex = (currentIndex + 1) % buttons.length
           setActiveButton(buttons[newIndex]);
+        }else {
+          setActiveButton(buttons[0]);
         }
       }
     } else if (e.key === 'Enter' || e.key === ' ') {
@@ -98,6 +81,7 @@ function App() {
   };
 
   const handleButtonPress = (button: string, shouldSetActiveIndex = true) => {
+    focusInput();
     if (shouldSetActiveIndex) {
       setActiveButton(button);
     }
@@ -128,7 +112,7 @@ function App() {
     <>
       <div>
         <Input name="input" value={value} ref={inputRef} onClick={focusInput}
-          onKeyDown={handleKeyDown} />
+          onKeyDown={handleKeyDown} onBlur={() => setActiveButton('')}/>
         <KeypadInput activeButton={activeButton} onChange={(event) => handleButtonPress(event?.target?.value)} name="numberinput" onMouseDown={onMouseDown} />
       </div>
     </>
