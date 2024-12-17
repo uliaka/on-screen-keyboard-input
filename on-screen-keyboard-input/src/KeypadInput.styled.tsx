@@ -27,5 +27,5 @@ interface IKeypadInputButtonProps extends InputHTMLAttributes<HTMLInputElement> 
 }
 
 export const KeypadInputButton: FC<IKeypadInputButtonProps> = (props) => {
-  return <KeypadInputElement type="button" {...props} />;
+  return <KeypadInputElement {...props} type="button" />;
 };

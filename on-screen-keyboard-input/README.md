@@ -1,50 +1,29 @@
-# React + TypeScript + Vite
+# Numeric Keypad with Input Field
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## **Overview**
+This project implements a numeric keypad that updates an input field dynamically through button clicks or direct user input. The functionality ensures seamless synchronization between the buttons and input field while providing a clean and user-friendly interface.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## **Acceptance Criteria**
+1. The input field updates dynamically when:
+   - The keypad buttons are clicked.
+   - The user types directly into the input field.
+2. **Numeric Buttons (`0-9` and `00`)**: Append the respective value to the input field.
+3. **Clear Button (`C`)**: Clears the entire value of the input field.
+4. The input field displays valid numeric input only.
+5. Buttons and input field remain synchronized in behavior and updates.
+6. Code is clean, modular, and adheres to React.js and TypeScript best practices.
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
-
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+## **Features**
+- Fully functional **numeric keypad**.
+- Input field supports:
+   - Button-based input.
+   - Manual user input.
+- "C" button clears the entire input value.
+- Modular components for reusability:
+   - `InputBox`
+   - `KeypadButton`
+   - `NumericKeypad`
