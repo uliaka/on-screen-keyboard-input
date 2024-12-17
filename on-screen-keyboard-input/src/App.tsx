@@ -1,56 +1,135 @@
-import { ChangeEvent, FocusEventHandler, MouseEventHandler, useCallback, useState } from 'react'
+import { MouseEventHandler, useState, useRef } from 'react'
 import './App.css'
 import { Input } from './Input'
 import { KeypadInput } from './KeypadInput'
 
 function App() {
-  const [values, setValues] = useState<string>('')
+  const [value, setValue] = useState<string>('')
+  const [activeButton, setActiveButton] = useState<string>('');
+
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  const buttons = ['7', '8', '9', '4', '5', '6', '1', '2', '3', '0', '00', 'C']
 
 
-  const onChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+  // const onChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
 
-    if (event.target.name === 'numberinput') {
-      // event.preventDefault();
-      if (event.target.value === 'C') {
-        setValues('')
-      } else {
-        setValues((prev) => prev + event.target.value)
-      }
-    } else {
-      setValues(event.target.value)
+  //   if (event.target.name === 'numberinput') {
+  //     // event.preventDefault();
+  //     if (event.target.value === 'C') {
+  //       setValues('')
+  //     } else {
+  //       setValues((prev) => prev + event.target.value)
+  //     }
+  //   } else {
+  //     setValues(event.target.value)
+  //   }
+
+  //   console.log('event.target.value:', event.target.value);
+  //   console.log('event.target.name:', event.target.name);
+  //   console.log('event.target.selectionStart:', event.target.selectionStart);
+
+
+  // }, []);
+
+  const focusInput = () => {
+    if (inputRef.current) {
+      inputRef.current.focus();
     }
+  };
 
-    console.log('event.target.value:', event.target.value);
-    console.log('event.target.name:', event.target.name);
-    console.log('event.target.selectionStart:', event.target.selectionStart);
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (!inputRef.current) return;
+    const input = inputRef.current;
+    const position = input.selectionStart ?? 0;
+    if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
+      e.preventDefault();
+      if (e.key === 'ArrowLeft') {
+        input.selectionStart = input.selectionEnd = Math.max(position - 1, 0);
+      } else if (e.key === 'ArrowRight') {
+        input.selectionStart = input.selectionEnd = Math.min(position + 1, input.value.length);
+      } else if (e.key === 'ArrowUp') {
+        input.selectionStart = input.selectionEnd = 0;
+      } else if (e.key === 'ArrowDown') {
+        input.selectionStart = input.selectionEnd = input.value.length;
+      }
+    } else if (e.key === 'Tab') {
+      e.preventDefault();
+      if (e.shiftKey) {
+        const currentIndex = buttons.indexOf(activeButton)
+
+        if (currentIndex !== -1) {
+          const newIndex = (currentIndex - 1 + buttons.length) % buttons.length
+          setActiveButton(buttons[newIndex]);
+        }
+      } else {
+        const currentIndex = buttons.indexOf(activeButton)
+        if (currentIndex !== -1) {
+          const newIndex = (currentIndex + 1) % buttons.length
+          setActiveButton(buttons[newIndex]);
+        }
+      }
+    } else if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleButtonPress(activeButton, true);
+    } else if (e.key === 'Backspace') {
+      handleBackspace();
+    } else if (e.key >= '0' && e.key <= '9') {
+      handleButtonPress(e.key, false);
+    }
+  };
 
 
-  }, []);
+  const handleBackspace = () => {
+    if (inputRef.current) {
+      const position = inputRef.current.selectionStart ?? 0;
+      if (position > 0) {
+        setValue((prev) => {
+          const updatedValue = prev.slice(0, position - 1) + prev.slice(position);
+          setTimeout(() => {
+            if (inputRef.current) {
+              inputRef.current.selectionStart = inputRef.current.selectionEnd = position - 1;
+            }
+          }, 0);
+          return updatedValue;
+        });
+      }
+    }
+  };
 
-  const handleClick = (key, input) => {
+  const handleButtonPress = (button: string, shouldSetActiveIndex = true) => {
+    if (shouldSetActiveIndex) {
+      setActiveButton(button);
+    }
+    if (inputRef.current) {
+      const position = inputRef.current.selectionStart || 0;
+      if (button === 'C') {
+        setValue('');
+      } else if (!isNaN(parseInt(button, 10))) {
+        setValue((prev) => {
+          const updatedValue = prev.slice(0, position) + button + prev.slice(position);
+          setTimeout(() => {
+            if (inputRef.current) {
+              inputRef.current.selectionStart = inputRef.current.selectionEnd = position + button.length;
+            }
+          }, 0);
+          return updatedValue;
+        });
+      }
+    }
+  };
+  ;
 
-  }
-
-  const onClick: MouseEventHandler<HTMLInputElement> = (e) => {
-    console.log('click event', e)
-  }
   const onMouseDown: MouseEventHandler<HTMLInputElement> = (e) => {
     e.preventDefault();
-    console.log('click event', e)
-  }
-  const onButtonFocus: FocusEventHandler<HTMLInputElement> = (e) => {
-
-    console.log('focus event', e)
-  }
-  const onFocus: FocusEventHandler<HTMLInputElement> = (e) => {
-    console.log('focus event', e)
   }
 
   return (
     <>
       <div>
-        <Input onChange={onChange} name="input" value={values} onClick={onClick} onFocus={onFocus} />
-        <KeypadInput onChange={onChange} onMouseDown={onMouseDown} name="numberinput" onFocus={onButtonFocus} />
+        <Input name="input" value={value} ref={inputRef} onClick={focusInput}
+          onKeyDown={handleKeyDown} />
+        <KeypadInput activeButton={activeButton} onChange={(event) => handleButtonPress(event?.target?.value)} name="numberinput" onMouseDown={onMouseDown} />
       </div>
     </>
   )

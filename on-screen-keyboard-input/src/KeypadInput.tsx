@@ -2,9 +2,11 @@ import { ChangeEventHandler, FC, InputHTMLAttributes, MouseEventHandler } from '
 import { Flex } from './Flex';
 import { KeypadInputButton } from './KeypadInput.styled';
 
-export interface IKeypadInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'name'> { name: string; onChange: ChangeEventHandler<HTMLInputElement> }
+export interface IKeypadInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'name'> { name: string; onChange: ChangeEventHandler<HTMLInputElement>, 
+	activeButton: string
+ }
 
-export const KeypadInput: FC<IKeypadInputProps> = ({ onChange, name, ...restProps }) => {
+export const KeypadInput: FC<IKeypadInputProps> = ({ onChange, name, activeButton, ...restProps }) => {
 	const _onChange: MouseEventHandler<HTMLInputElement> = (event) => {
 		onChange({ ...event, target: { ...event.target, name } as EventTarget & HTMLInputElement })
 	}
