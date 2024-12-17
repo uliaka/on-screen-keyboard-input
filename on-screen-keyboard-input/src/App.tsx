@@ -89,7 +89,7 @@ function App() {
       const position = inputRef.current.selectionStart || 0;
       if (button === 'C') {
         setValue('');
-      } else if (!isNaN(parseInt(button, 10))) {
+      } else {
         setValue((prev) => {
           const updatedValue = prev.slice(0, position) + button + prev.slice(position);
           setTimeout(() => {
