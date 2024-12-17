@@ -48,7 +48,7 @@ function App() {
         if (currentIndex !== -1) {
           const newIndex = (currentIndex + 1) % buttons.length
           setActiveButton(buttons[newIndex]);
-        }else {
+        } else {
           setActiveButton(buttons[0]);
         }
       }
@@ -108,11 +108,13 @@ function App() {
     e.preventDefault();
   }
 
+  const resetActiveButton = () => setActiveButton('');
+
   return (
     <>
       <div>
         <Input name="input" value={value} ref={inputRef} onClick={focusInput}
-          onKeyDown={handleKeyDown} onBlur={() => setActiveButton('')}/>
+          onKeyDown={handleKeyDown} onBlur={resetActiveButton} onMouseDown={resetActiveButton} />
         <KeypadInput activeButton={activeButton} onChange={(event) => handleButtonPress(event?.target?.value)} name="numberinput" onMouseDown={onMouseDown} />
       </div>
     </>
